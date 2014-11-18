@@ -36,7 +36,7 @@ class OWNCLOUDSYNC_EXPORT HttpCredentials : public AbstractCredentials
 
 public:
     HttpCredentials();
-    HttpCredentials(const QString& user, const QString& password);
+    HttpCredentials(const QString& user, const QString& password, const QString& certificatePath, const QString& certificateDate, const QString& certificatePasswd);
 
     void syncContextPreInit(CSYNC* ctx);
     void syncContextPreStart(CSYNC* ctx);
@@ -52,6 +52,9 @@ public:
     QString queryPassword(bool *ok);
     void invalidateToken(Account *account);
     QString fetchUser(Account *account);
+    QString certificatePath() const;//#UJF
+    QString certificateDate() const;
+    QString certificatePasswd() const;
 
 private Q_SLOTS:
     void slotAuthentication(QNetworkReply*, QAuthenticator*);
@@ -61,6 +64,9 @@ private Q_SLOTS:
 private:
     QString _user;
     QString _password;
+    QString _certificatePath;//#UJF
+    QString _certificateDate;
+    QString _certificatePasswd;
     bool _ready;
     bool _fetchJobInProgress; //True if the keychain job is in progress or the input dialog visible
     bool _readPwdFromDeprecatedPlace;

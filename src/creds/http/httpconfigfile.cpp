@@ -22,6 +22,9 @@ namespace
 const char userC[] = "user";
 const char passwdC[] = "passwd";
 const char oldPasswdC[] = "password";
+const char certPath[] = "certificatePath"; //#UJF
+const char certDate[] = "certificateDate";
+const char certPasswd[] = "certificatePasswd";
 
 } // ns
 
@@ -76,6 +79,36 @@ void HttpConfigFile::fixupOldPassword()
 void HttpConfigFile::removeOldPassword()
 {
     removeData(QString(), QLatin1String(oldPasswdC));
+}
+
+QString HttpConfigFile::certificatePath() const //#UJF
+{
+    return retrieveData(QString(), QLatin1String(certPath)).toString();
+}
+
+void HttpConfigFile::setCertificatePath(const QString& cPath)
+{
+     storeData(QString(), QLatin1String(certPath), QVariant(cPath));
+}
+
+QString HttpConfigFile::certificateDate() const
+{
+    return retrieveData(QString(), QLatin1String(certDate)).toString();
+}
+
+void HttpConfigFile::setCertificateDate(const QString& cDate)
+{
+     storeData(QString(), QLatin1String(certDate), QVariant(cDate));
+}
+
+QString HttpConfigFile::certificatePasswd() const
+{
+    return retrieveData(QString(), QLatin1String(certPasswd)).toString();
+}
+
+void HttpConfigFile::setCertificatePasswd(const QString& cPasswd)
+{
+     storeData(QString(), QLatin1String(certPasswd), QVariant(cPasswd));
 }
 
 } // ns Mirall

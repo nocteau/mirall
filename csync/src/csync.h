@@ -214,6 +214,10 @@ typedef void (*csync_log_callback) (int verbosity,
                                     const char *buffer,
                                     void *userdata);
 
+//#UJF
+void setCertificatePath(char** certPath, char** certPasswd);
+
+
 /**
  * @brief Check internal csync status.
  *

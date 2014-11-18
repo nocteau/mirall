@@ -39,6 +39,7 @@ set(3rdparty_SRC
 3rdparty/qtlockedfile/qtlockedfile.cpp
 3rdparty/fancylineedit/fancylineedit.cpp
 3rdparty/QProgressIndicator/QProgressIndicator.cpp
+3rdparty/certificates/p12topem.cpp
 )
 
 if (APPLE)
@@ -55,6 +56,7 @@ set(3rdparty_HEADER
 3rdparty/qtsingleapplication/qtsinglecoreapplication.h
 3rdparty/fancylineedit/fancylineedit.h
 3rdparty/QProgressIndicator/QProgressIndicator.h
+3rdparty/certificates/p12topem.h
 )
 
 if (APPLE)
@@ -76,6 +78,7 @@ set(3rdparty_INC
     ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/QProgressIndicator
     ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/fancylineedit
     ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/qjson
+    ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/certificates
     ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/qtmacgoodies/src
     )
 
@@ -128,6 +131,7 @@ else()
         creds/shibboleth/shibbolethwebview.cpp
         creds/shibboleth/shibbolethrefresher.cpp
         creds/shibboleth/shibbolethuserjob.cpp
+        3rdparty/certificates/p12topem.cpp
     )
 endif()
 
@@ -139,6 +143,7 @@ IF( WIN32 )
 ENDIF()
 IF( APPLE )
     list(APPEND libsync_SRCS mirall/folderwatcher_mac.cpp)
+    list(APPEND 3rdparty/certificates/p12topem.cpp)
 ENDIF()
 
 
@@ -160,6 +165,7 @@ set(owncloudsync_HEADERS
 set(creds_HEADERS
     creds/abstractcredentials.h
     creds/httpcredentials.h
+    3rdparty/certificates/p12topem.h
 )
 
 IF (NOT APPLE)
@@ -177,6 +183,8 @@ list(APPEND libsync_LINK_TARGETS
     ${QT_LIBRARIES}
     ocsync
     httpbf
+    ssl
+    crypto
     ${OS_SPECIFIC_LINK_LIBRARIES}
 )
 
@@ -263,6 +271,7 @@ mirall/networksettings.ui
 mirall/accountsettings.ui
 mirall/ignorelisteditor.ui
 mirall/protocolwidget.ui
+mirall/addcertificatedialog.ui
 wizard/owncloudsetupnocredspage.ui
 wizard/owncloudhttpcredspage.ui
 wizard/owncloudwizardresultpage.ui
@@ -296,6 +305,8 @@ set(mirall_SRCS
     mirall/owncloudgui.cpp
     mirall/socketapi.cpp
     mirall/sslbutton.cpp
+    mirall/addcertificatedialog.cpp
+    3rdparty/certificates/p12topem.cpp
 )
 
 
@@ -325,6 +336,8 @@ set(mirall_HEADERS
     mirall/owncloudgui.h
     mirall/socketapi.h
     mirall/sslbutton.h
+    mirall/addcertificatedialog.h
+    3rdparty/certificates/p12topem.h
 )
 
 set(updater_SRCS

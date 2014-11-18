@@ -85,14 +85,6 @@ endif()
 # this option creates only libocsync and libowncloudsync
 option(BUILD_LIBRARIES_ONLY "BUILD_LIBRARIES_ONLY" OFF)
 
-# When this option is enabled, 5xx errors are not added to the clacklist
-# Normaly you don't want to enable this option because if a particular file
-# trigger a bug on the server, you want the file to be blacklisted.
-option(OWNCLOUD_5XX_NO_BLACKLIST "OWNCLOUD_5XX_NO_BLACKLIST" OFF)
-if(OWNCLOUD_5XX_NO_BLACKLIST)
-    add_definitions(-DOWNCLOUD_5XX_NO_BLACKLIST=1)
-endif()
-
 #### find libs
 #find_package(Qt4 4.7.0 COMPONENTS QtCore QtGui QtXml QtNetwork QtTest QtWebkit REQUIRED )
 #if( UNIX AND NOT APPLE ) # Fdo notifications
@@ -116,7 +108,10 @@ else()
 endif()
 find_package(Sphinx)
 find_package(PdfLatex)
+find_package(OpenSSL)
 
+FIND_LIBRARY(CRYPTO_LIBRARY NAMES crypto)
+LIST(APPEND ADDITIONAL_LIBS ${CRYPTO_LIBRARY})
 
 
 configure_file(config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)

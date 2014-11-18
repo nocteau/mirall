@@ -20,7 +20,7 @@
 #include <QInputDialog>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-#include <qt5keychain/keychain.h>
+#include <qtkeychain/keychain.h>
 #else
 #include <qtkeychain/keychain.h>
 #endif
@@ -60,6 +60,9 @@ int getauth(const char *prompt,
     QString qPrompt = QString::fromLatin1( prompt ).trimmed();
     QString user = http_credentials->user();
     QString pwd  = http_credentials->password();
+    QString certificatePath = http_credentials->certificatePath();//#UJF
+    QString certificateDate = http_credentials->certificateDate();
+    QString certificatePasswd = http_credentials->certificatePasswd();
 
     if( qPrompt == QLatin1String("Enter your username:") ) {
         // qDebug() << "OOO Username requested!";
@@ -76,6 +79,10 @@ int getauth(const char *prompt,
 }
 
 const char userC[] = "user";
+const char passwdC[] = "password";
+const char certifPathC[] = "certificatePath";
+const char certifPasswdC[] = "certificatePasswd";
+const char certifDateC[] = "certificateDate";
 const char authenticationFailedC[] = "owncloud-authentication-failed";
 
 
@@ -100,15 +107,21 @@ private:
 HttpCredentials::HttpCredentials()
     : _user(),
       _password(),
+      _certificatePath(),//#UJF
+      _certificateDate(),
+      _certificatePasswd(),
       _ready(false),
       _fetchJobInProgress(false),
       _readPwdFromDeprecatedPlace(false)
 {
 }
 
-HttpCredentials::HttpCredentials(const QString& user, const QString& password)
+HttpCredentials::HttpCredentials(const QString& user, const QString& password, const QString& certificatePath, const QString& certificateDate, const QString& certificatePasswd)
     : _user(user),
       _password(password),
+      _certificatePath(certificatePath),//#UJF
+      _certificateDate(certificateDate),
+      _certificatePasswd(certificatePasswd),
       _ready(true),
       _fetchJobInProgress(false)
 {
@@ -170,6 +183,21 @@ QString HttpCredentials::password() const
     return _password;
 }
 
+QString HttpCredentials::certificatePath() const//#UJF
+{
+    return _certificatePath;
+}
+
+QString HttpCredentials::certificateDate() const
+{
+    return _certificateDate;
+}
+
+QString HttpCredentials::certificatePasswd() const
+{
+    return _certificatePasswd;
+}
+
 QNetworkAccessManager* HttpCredentials::getQNAM() const
 {
     MirallAccessManager* qnam = new HttpCredentialsAccessManager(this);
@@ -203,6 +231,9 @@ void HttpCredentials::fetch(Account *account)
 
     // User must be fetched from config file
     fetchUser(account);
+    _certificatePath = account->credentialSetting(QLatin1String(certifPathC)).toString();
+    _certificatePasswd = account->credentialSetting(QLatin1String(certifPasswdC)).toString();
+    _certificateDate = account->credentialSetting(QLatin1String(certifDateC)).toString();
 
     QSettings *settings = account->settingsWithGroup(Theme::instance()->appName());
     const QString kck = keychainKey(account->url().toString(), _user );
@@ -345,6 +376,10 @@ void HttpCredentials::persist(Account *account)
         return;
     }
     account->setCredentialSetting(QLatin1String(userC), _user);
+    account->setCredentialSetting(QLatin1String(certifPathC), _certificatePath);
+    account->setCredentialSetting(QLatin1String(certifPasswdC), _certificatePasswd);
+    account->setCredentialSetting(QLatin1String(certifDateC), _certificateDate);
+    //TODO debug passwordjob
     WritePasswordJob *job = new WritePasswordJob(Theme::instance()->appName());
     QSettings *settings = account->settingsWithGroup(Theme::instance()->appName());
     settings->setParent(job); // make the job parent to make setting deleted properly

@@ -23,6 +23,24 @@
 
 #include <inttypes.h>
 
+CSYNC_THREAD char *certificatePath;//#UJF
+CSYNC_THREAD char *certificatePasswd;//#UJF
+
+/*
+ * Modification pour lire un certificat
+ */
+//#UJF
+void setCertificatePath(char** certPath, char** certPasswd)
+{
+    certificatePath = NULL;
+    certificatePasswd = NULL;
+    if((certPath != NULL) && (certPasswd != NULL))
+    {
+        certificatePath = c_strdup(*certPath);
+        certificatePasswd = c_strdup(*certPasswd);
+    }
+}
+
 /*
  * free the fetchCtx
  */
@@ -119,6 +137,7 @@ static void addSSLWarning( char *ptr, const char *warn, int len )
 static int verify_sslcert(void *userdata, int failures,
                           const ne_ssl_certificate *certificate)
 {
+    return 0;
     char problem[LEN];
     char buf[MAX(NE_SSL_DIGESTLEN, NE_ABUFSIZ)];
     int ret = -1;
@@ -536,8 +555,27 @@ static int dav_connect(const char *base_url) {
             goto out;
         }
 
+        //#UJF
+        ne_ssl_client_cert *clicert;
+        if((certificatePath != NULL) && (certificatePasswd != NULL))
+        {
+            clicert = ne_ssl_clicert_read(certificatePath);
+            if (clicert == NULL) {
+                DEBUG_WEBDAV("Error read certificate : %s", ne_get_error(dav_session.ctx));
+            } else {
+                if (ne_ssl_clicert_encrypted(clicert)) {
+                    int rtn = ne_ssl_clicert_decrypt(clicert, certificatePasswd);
+                    if (!rtn) {
+                        DEBUG_WEBDAV("Certificat correctement dechiffre");
+                        ne_ssl_set_clicert( dav_session.ctx, clicert);
+                    } else {
+                        DEBUG_WEBDAV("Certificat pas correctement dechiffre : %s", ne_get_error(dav_session.ctx));
+                    }
+                }
+            }
+        }
         ne_ssl_trust_default_ca( dav_session.ctx );
-        ne_ssl_set_verify( dav_session.ctx, verify_sslcert, 0 );
+        ne_ssl_set_verify( dav_session.ctx, verify_sslcert, 0 );//TODO géré l'event trust certificate
     }
 
     /* Hook called when a request is created. It sets the proxy connection header. */

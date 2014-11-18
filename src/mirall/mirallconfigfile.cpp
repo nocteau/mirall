@@ -63,6 +63,9 @@ static const char downloadLimitC[]    = "BWLimit/downloadLimit";
 
 static const char maxLogLinesC[] = "Logging/maxLogLines";
 
+const char certPath[] = "http_certificatePath"; //#UJF
+const char certDate[] = "http_certificateDate";
+const char certPasswd[] = "http_certificatePasswd";
 QString MirallConfigFile::_confDir = QString::null;
 bool    MirallConfigFile::_askedUser = false;
 
@@ -533,6 +536,42 @@ void MirallConfigFile::setMonoIcons(bool useMonoIcons)
 {
     QSettings settings(configFile(), QSettings::IniFormat);
     settings.setValue(QLatin1String(monoIconsC), useMonoIcons);
+}
+
+QString MirallConfigFile::certificatePath() const //#UJF
+{
+    return retrieveData(QString(), QLatin1String(certPath)).toString();
+}
+
+void MirallConfigFile::setCertificatePath(const QString& cPath)
+{
+     QSettings settings(configFile(), QSettings::IniFormat);
+     settings.setValue( QLatin1String(certPath), cPath);
+     settings.sync();
+}
+
+QString MirallConfigFile::certificateDate() const
+{
+    return retrieveData(QString(), QLatin1String(certDate)).toString();
+}
+
+void MirallConfigFile::setCertificateDate(const QString& cDate)
+{
+     QSettings settings(configFile(), QSettings::IniFormat);
+     settings.setValue( QLatin1String(certDate), cDate);
+     settings.sync();
+}
+
+QString MirallConfigFile::certificatePasswd() const
+{
+    return retrieveData(QString(), QLatin1String(certPasswd)).toString();
+}
+
+void MirallConfigFile::setCertificatePasswd(const QString& cPasswd)
+{
+     QSettings settings(configFile(), QSettings::IniFormat);
+     settings.setValue( QLatin1String(certPasswd), cPasswd);
+     settings.sync();
 }
 
 }

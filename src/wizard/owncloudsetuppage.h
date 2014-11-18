@@ -19,7 +19,10 @@
 #include <QWizard>
 
 #include "wizard/owncloudwizardcommon.h"
+#include "wizard/owncloudwizard.h"
 #include "ui_owncloudsetupnocredspage.h"
+
+#include "mirall/addcertificatedialog.h"
 
 class QLabel;
 class QVariant;
@@ -31,7 +34,8 @@ class OwncloudSetupPage: public QWizardPage
 {
     Q_OBJECT
 public:
-  OwncloudSetupPage();
+  OwncloudSetupPage(QWidget *parent=0);
+  ~OwncloudSetupPage();
 
   virtual bool isComplete() const;
   virtual void initializePage();
@@ -50,6 +54,8 @@ public slots:
   void setConfigExists(  bool );
   void startSpinner();
   void stopSpinner();
+  void slotAskCertificate();//#UJF
+  void slotCertificateAccepted();//#UJF
 
 protected slots:
   void slotUrlChanged(const QString&);
@@ -73,7 +79,10 @@ private:
   WizardCommon::AuthType _authType;
 
   QProgressIndicator* _progressIndi;
+  QButtonGroup* _selectiveSyncButtons;
   QString _remoteFolder;
+  AddCertificateDialog* addCertDial;//#UJF
+  OwncloudWizard* _ocWizard;
 };
 
 } // ns Mirall

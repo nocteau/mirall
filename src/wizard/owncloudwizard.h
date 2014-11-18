@@ -60,6 +60,12 @@ public:
     void successfulStep();
     AbstractCredentials* getCredentials() const;
 
+    void raiseCertificatePopup();//#UJF
+    QString ownCloudCertificate;
+    QString ownCloudPrivateKey;
+    QString ownCloudCertificatePath;
+    QString ownCloudCertificatePasswd;
+
 public slots:
     void setAuthType(WizardCommon::AuthType type);
     void setRemoteFolder( const QString& );
@@ -73,6 +79,7 @@ signals:
     void createLocalAndRemoteFolders(const QString&, const QString&);
     // make sure to connect to this, rather than finished(int)!!
     void basicSetupFinished( int );
+    void needCertificate();//#UJF
 
 private:
     Account* _account;

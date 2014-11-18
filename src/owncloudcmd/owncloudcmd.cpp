@@ -153,7 +153,7 @@ int main(int argc, char **argv) {
     SimpleSslErrorHandler *sslErrorHandler = new SimpleSslErrorHandler;
 
     account.setUrl(url);
-    account.setCredentials(new HttpCredentials(url.userName(), url.password()));
+    account.setCredentials(new HttpCredentials(url.userName(), url.password(), "", "", ""));
     account.setSslErrorHandler(sslErrorHandler);
     AccountManager::instance()->setAccount(&account);
 
